@@ -5,38 +5,69 @@ using UnityEngine;
 public class Test : MonoBehaviour
 {
     private bool isDragging = false;
+    private bool isMouseDown = false;
     private Vector3 offset;
     private Camera cam;
-    private float initialY; // Store the initial Y position
-
+    private float initialY;
+    private Vector3 mouseDownPos;
     public float snapDistance = 0.5f;
+    public float dragThreshold = 0.1f; // Threshold for detecting drag
+
+    // Static: globally occupied snap points
+    private static HashSet<Transform> occupiedSnapPoints = new HashSet<Transform>();
+
+    // Instance: snap point currently used by THIS object
+    private Transform currentSnapPoint = null;
 
     void Start()
     {
         cam = Camera.main;
-        initialY = transform.position.y; // Save the Y position when the object starts
+        initialY = transform.position.y;
     }
 
     void OnMouseDown()
     {
-        isDragging = true;
-        offset = transform.position - GetMouseWorldPos();
+        isMouseDown = true;
+        mouseDownPos = GetMouseWorldPos();
+        offset = transform.position - mouseDownPos;
+
+        // Free previously used snap point, if any
+        if (currentSnapPoint != null)
+        {
+            occupiedSnapPoints.Remove(currentSnapPoint);
+            currentSnapPoint = null;
+        }
     }
 
     void OnMouseUp()
     {
+        if (isDragging)
+        {
+            TrySnap();
+        }
         isDragging = false;
-        TrySnap();
+        isMouseDown = false;
     }
 
     void Update()
     {
-        if (isDragging)
+        if (isMouseDown)
         {
-            Vector3 mousePos = GetMouseWorldPos();
-            Vector3 newPos = mousePos + offset;
-            newPos.y = initialY; // Lock Y position
-            transform.position = newPos;
+            Vector3 currentMousePos = GetMouseWorldPos();
+            float dragDistance = Vector3.Distance(currentMousePos, mouseDownPos);
+
+            // Only start dragging after the mouse has moved beyond the threshold
+            if (!isDragging && dragDistance > dragThreshold)
+            {
+                isDragging = true;
+            }
+
+            if (isDragging)
+            {
+                Vector3 newPos = currentMousePos + offset;
+                newPos.y = initialY;
+                transform.position = newPos;
+            }
         }
     }
 
@@ -55,7 +86,6 @@ public class Test : MonoBehaviour
 
         foreach (Test other in allPieces)
         {
-            // Skip self-object
             if (other == this) continue;
 
             foreach (Transform mySnap in transform)
@@ -66,10 +96,9 @@ public class Test : MonoBehaviour
                 {
                     if (!theirSnap.name.StartsWith("Snap")) continue;
 
-                    // Calculate distance between snap points
-                    float dist = Vector3.Distance(mySnap.position, theirSnap.position);
+                    if (occupiedSnapPoints.Contains(theirSnap)) continue;
 
-                    // If the distance is smaller than the snap threshold and it's the closest one found
+                    float dist = Vector3.Distance(mySnap.position, theirSnap.position);
                     if (dist < snapDistance && dist < closestDist)
                     {
                         closestDist = dist;
@@ -81,11 +110,13 @@ public class Test : MonoBehaviour
 
         if (closestSnapPoint != null)
         {
-            // Simply snap to the closest snap point
             Vector3 targetPosition = closestSnapPoint.position;
-            targetPosition.y = initialY; // Ensure the Y position stays fixed
+            targetPosition.y = initialY;
 
             transform.position = targetPosition;
+
+            currentSnapPoint = closestSnapPoint;
+            occupiedSnapPoints.Add(currentSnapPoint);
         }
     }
 }
