@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,6 +18,17 @@ public class Test : MonoBehaviour
 
     // Instance: snap point currently used by THIS object
     private Transform currentSnapPoint = null;
+
+    [System.Serializable]
+    public class PuzzleConnection
+    {
+        public string mySnapName;              // e.g., "Snap1"
+        public GameObject targetPiece;         // e.g., Article 2 GameObject
+        public string targetSnapName;          // e.g., "Snap2"
+    }
+
+    [Header("Correct Position Settings")]
+    public List<PuzzleConnection> correctConnections;
 
     void Start()
     {
@@ -44,7 +55,18 @@ public class Test : MonoBehaviour
         if (isDragging)
         {
             TrySnap();
+
+            // Check correctness after snapping
+            if (IsInCorrectPosition())
+            {
+                Debug.Log(name + " is in the correct position!");
+            }
+            else
+            {
+                Debug.Log(name + " is NOT in the correct position!");
+            }
         }
+
         isDragging = false;
         isMouseDown = false;
     }
@@ -119,4 +141,43 @@ public class Test : MonoBehaviour
             occupiedSnapPoints.Add(currentSnapPoint);
         }
     }
+
+    public bool IsInCorrectPosition()
+    {
+        if (correctConnections == null || correctConnections.Count == 0)
+        {
+            Debug.LogWarning($"{gameObject.name} has no correctConnections defined.");
+            return false;
+        }
+
+        foreach (var connection in correctConnections)
+        {
+            if (connection == null || connection.targetPiece == null)
+            {
+                Debug.LogWarning($"Invalid connection in {gameObject.name}. Skipping.");
+                return false;
+            }
+
+            Transform mySnap = transform.Find(connection.mySnapName);
+            Transform theirSnap = connection.targetPiece.transform.Find(connection.targetSnapName);
+
+            if (mySnap == null || theirSnap == null)
+            {
+                Debug.LogWarning($"Snap point not found: {connection.mySnapName} or {connection.targetSnapName} on {gameObject.name}");
+                return false;
+            }
+
+            float dist = Vector3.Distance(mySnap.position, theirSnap.position);
+
+            if (dist > snapDistance)
+            {
+                Debug.LogWarning($"{gameObject.name} incorrect: {connection.mySnapName} not correctly aligned with {connection.targetPiece.name}.{connection.targetSnapName}. Distance: {dist}");
+                return false;
+            }
+        }
+
+        Debug.Log($"{gameObject.name} is in the correct position!");
+        return true;
+    }
+
 }

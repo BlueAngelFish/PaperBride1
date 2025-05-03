@@ -132,7 +132,7 @@ GameObject:
   m_Component:
   - component: {fileID: 55732123}
   m_Layer: 0
-  m_Name: Snap 2
+  m_Name: Snap2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -501,8 +501,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2dce511d984a5f844bee96167614a21d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  snapDistance: 0.5
+  snapDistance: 0.4
   dragThreshold: 0.1
+  correctConnections:
+  - mySnapName: Snap4
+    targetPiece: {fileID: 473886216}
+    targetSnapName: Snap3
+  - mySnapName: Snap1
+    targetPiece: {fileID: 342790295}
+    targetSnapName: Snap2
 --- !u!1 &245373168
 GameObject:
   m_ObjectHideFlags: 0
@@ -513,7 +520,7 @@ GameObject:
   m_Component:
   - component: {fileID: 245373169}
   m_Layer: 0
-  m_Name: Snap 1
+  m_Name: Snap1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -649,7 +656,7 @@ GameObject:
   m_Component:
   - component: {fileID: 307911926}
   m_Layer: 0
-  m_Name: Snap 3
+  m_Name: Snap3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1006,8 +1013,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2dce511d984a5f844bee96167614a21d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  snapDistance: 0.5
+  snapDistance: 0.4
   dragThreshold: 0.1
+  correctConnections:
+  - mySnapName: Snap4
+    targetPiece: {fileID: 1952706341}
+    targetSnapName: Snap3
+  - mySnapName: Snap2
+    targetPiece: {fileID: 242230615}
+    targetSnapName: Snap1
 --- !u!1 &368737640
 GameObject:
   m_ObjectHideFlags: 0
@@ -1271,8 +1285,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2dce511d984a5f844bee96167614a21d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  snapDistance: 0.5
+  snapDistance: 0.4
   dragThreshold: 0.1
+  correctConnections:
+  - mySnapName: Snap1
+    targetPiece: {fileID: 1952706341}
+    targetSnapName: Snap2
+  - mySnapName: Snap3
+    targetPiece: {fileID: 242230615}
+    targetSnapName: Snap4
 --- !u!1 &556207968 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 11a623e313c350949b7b37096a228c06, type: 3}
@@ -1309,7 +1330,7 @@ GameObject:
   m_Component:
   - component: {fileID: 609790832}
   m_Layer: 0
-  m_Name: Snap 3
+  m_Name: Snap3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1340,7 +1361,7 @@ GameObject:
   m_Component:
   - component: {fileID: 659401350}
   m_Layer: 0
-  m_Name: Snap 3
+  m_Name: Snap3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1437,7 +1458,7 @@ GameObject:
   m_Component:
   - component: {fileID: 850549944}
   m_Layer: 0
-  m_Name: Snap 4
+  m_Name: Snap4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1468,7 +1489,7 @@ GameObject:
   m_Component:
   - component: {fileID: 883324618}
   m_Layer: 0
-  m_Name: Snap 2
+  m_Name: Snap2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1636,7 +1657,7 @@ GameObject:
   m_Component:
   - component: {fileID: 986685238}
   m_Layer: 0
-  m_Name: Snap 1
+  m_Name: Snap1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1827,7 +1848,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1266659398}
   m_Layer: 0
-  m_Name: Snap 4
+  m_Name: Snap4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1858,7 +1879,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1274310064}
   m_Layer: 0
-  m_Name: Snap 2
+  m_Name: Snap2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1889,7 +1910,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1278392791}
   m_Layer: 0
-  m_Name: Snap 3
+  m_Name: Snap3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1920,7 +1941,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1375436929}
   m_Layer: 0
-  m_Name: Snap 1
+  m_Name: Snap1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2173,7 +2194,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1731264355}
   m_Layer: 0
-  m_Name: Snap 4
+  m_Name: Snap4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2204,7 +2225,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1795694200}
   m_Layer: 0
-  m_Name: Snap 1
+  m_Name: Snap1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2235,7 +2256,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1846230442}
   m_Layer: 0
-  m_Name: Snap 4
+  m_Name: Snap4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2380,8 +2401,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2dce511d984a5f844bee96167614a21d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  snapDistance: 0.5
+  snapDistance: 0.4
   dragThreshold: 0.1
+  correctConnections:
+  - mySnapName: Snap2
+    targetPiece: {fileID: 473886216}
+    targetSnapName: Snap1
+  - mySnapName: Snap3
+    targetPiece: {fileID: 342790295}
+    targetSnapName: Snap4
 --- !u!1 &2058080772
 GameObject:
   m_ObjectHideFlags: 0
@@ -2392,7 +2420,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2058080773}
   m_Layer: 0
-  m_Name: Snap 2
+  m_Name: Snap2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
