@@ -37,7 +37,7 @@ public class PuzzlePiece : MonoBehaviour
     void Start()
     {
         cam = Camera.main;
-        initialY = transform.position.y; 
+        initialY = transform.position.y;
 
         if (totalArticles == 0) //check total article piece once 
         {
@@ -194,11 +194,11 @@ public class PuzzlePiece : MonoBehaviour
             float dist = Vector3.Distance(other.transform.position, position);
             if (dist < overlapBuffer)
             {
-                return true; 
+                return true;
             }
         }
 
-        return false; 
+        return false;
     }
 
     public bool IsInCorrectPosition()
@@ -230,6 +230,10 @@ public class PuzzlePiece : MonoBehaviour
         foreach (var article in allArticles)
         {
             article.transform.Rotate(0, 0, 180);
+        }
+        foreach (PhotoPuzzle puzzle in FindObjectsOfType<PhotoPuzzle>())
+        {
+            puzzle.ResetInitialY();
         }
         Debug.Log("All articles flipped!");
     }
