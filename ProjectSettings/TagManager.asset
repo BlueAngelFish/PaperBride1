@@ -10,6 +10,7 @@ TagManager:
   - MiniWorldCamera
   - Water
   - Grabbable
+  - Teacup
   layers:
   - Default
   - TransparentFX
