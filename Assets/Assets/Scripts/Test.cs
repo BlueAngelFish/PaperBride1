@@ -11,29 +11,37 @@ public class Test : MonoBehaviour
     private float initialY;
     private Vector3 mouseDownPos;
     public float snapDistance = 0.5f;
-    public float dragThreshold = 0.1f; // Threshold for detecting drag
+    public float dragThreshold = 0.1f;
 
-    // Static: globally occupied snap points
     private static HashSet<Transform> occupiedSnapPoints = new HashSet<Transform>();
-
-    // Instance: snap point currently used by THIS object
     private Transform currentSnapPoint = null;
 
     [System.Serializable]
     public class PuzzleConnection
     {
-        public string mySnapName;              // e.g., "Snap1"
-        public GameObject targetPiece;         // e.g., Article 2 GameObject
-        public string targetSnapName;          // e.g., "Snap2"
+        public string mySnapName;
+        public GameObject targetPiece;
+        public string targetSnapName;
     }
 
     [Header("Correct Position Settings")]
     public List<PuzzleConnection> correctConnections;
 
+    private bool isCorrectlyConnected = false;
+    private static int correctArticleCount = 0;
+    private static bool allArticlesConnectedLogged = false;
+    private static int totalArticles = 0;
+
     void Start()
     {
         cam = Camera.main;
         initialY = transform.position.y;
+
+        // Count total articles once at start
+        if (totalArticles == 0)
+        {
+            totalArticles = FindObjectsOfType<Test>().Length;
+        }
     }
 
     void OnMouseDown()
@@ -42,7 +50,6 @@ public class Test : MonoBehaviour
         mouseDownPos = GetMouseWorldPos();
         offset = transform.position - mouseDownPos;
 
-        // Free previously used snap point, if any
         if (currentSnapPoint != null)
         {
             occupiedSnapPoints.Remove(currentSnapPoint);
@@ -56,14 +63,36 @@ public class Test : MonoBehaviour
         {
             TrySnap();
 
-            // Check correctness after snapping
-            if (IsInCorrectPosition())
+            bool nowCorrect = IsInCorrectPosition();
+
+            if (nowCorrect && !isCorrectlyConnected)
+            {
+                isCorrectlyConnected = true;
+                correctArticleCount++;
+            }
+            else if (!nowCorrect && isCorrectlyConnected)
+            {
+                isCorrectlyConnected = false;
+                correctArticleCount--;
+            }
+
+            if (nowCorrect)
             {
                 Debug.Log(name + " is in the correct position!");
             }
             else
             {
                 Debug.Log(name + " is NOT in the correct position!");
+            }
+
+            if (correctArticleCount == totalArticles && !allArticlesConnectedLogged)
+            {
+                Debug.Log("All articles are in the correct position!");
+                allArticlesConnectedLogged = true;
+            }
+            else if (correctArticleCount < totalArticles)
+            {
+                allArticlesConnectedLogged = false; // Reset when something becomes incorrect
             }
         }
 
@@ -78,7 +107,6 @@ public class Test : MonoBehaviour
             Vector3 currentMousePos = GetMouseWorldPos();
             float dragDistance = Vector3.Distance(currentMousePos, mouseDownPos);
 
-            // Only start dragging after the mouse has moved beyond the threshold
             if (!isDragging && dragDistance > dragThreshold)
             {
                 isDragging = true;
@@ -117,7 +145,6 @@ public class Test : MonoBehaviour
                 foreach (Transform theirSnap in other.transform)
                 {
                     if (!theirSnap.name.StartsWith("Snap")) continue;
-
                     if (occupiedSnapPoints.Contains(theirSnap)) continue;
 
                     float dist = Vector3.Distance(mySnap.position, theirSnap.position);
@@ -136,7 +163,6 @@ public class Test : MonoBehaviour
             targetPosition.y = initialY;
 
             transform.position = targetPosition;
-
             currentSnapPoint = closestSnapPoint;
             occupiedSnapPoints.Add(currentSnapPoint);
         }
@@ -145,39 +171,24 @@ public class Test : MonoBehaviour
     public bool IsInCorrectPosition()
     {
         if (correctConnections == null || correctConnections.Count == 0)
-        {
-            Debug.LogWarning($"{gameObject.name} has no correctConnections defined.");
             return false;
-        }
 
         foreach (var connection in correctConnections)
         {
             if (connection == null || connection.targetPiece == null)
-            {
-                Debug.LogWarning($"Invalid connection in {gameObject.name}. Skipping.");
                 return false;
-            }
 
             Transform mySnap = transform.Find(connection.mySnapName);
             Transform theirSnap = connection.targetPiece.transform.Find(connection.targetSnapName);
 
             if (mySnap == null || theirSnap == null)
-            {
-                Debug.LogWarning($"Snap point not found: {connection.mySnapName} or {connection.targetSnapName} on {gameObject.name}");
                 return false;
-            }
 
             float dist = Vector3.Distance(mySnap.position, theirSnap.position);
-
             if (dist > snapDistance)
-            {
-                Debug.LogWarning($"{gameObject.name} incorrect: {connection.mySnapName} not correctly aligned with {connection.targetPiece.name}.{connection.targetSnapName}. Distance: {dist}");
                 return false;
-            }
         }
 
-        Debug.Log($"{gameObject.name} is in the correct position!");
         return true;
     }
-
 }
