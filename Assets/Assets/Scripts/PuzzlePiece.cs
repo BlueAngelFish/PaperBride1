@@ -2,45 +2,51 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Test : MonoBehaviour
+public class PuzzlePiece : MonoBehaviour
 {
     private bool isDragging = false;
     private bool isMouseDown = false;
-    private Vector3 offset;
+    private Vector3 offset; //offset between mouse and drag 
     private Camera cam;
     private float initialY;
-    private Vector3 mouseDownPos;
+    private Vector3 mouseDownPos; //first mouse click position
     public float snapDistance = 0.5f;
-    public float dragThreshold = 0.1f;
+    public float dragThreshold = 0.1f; //prevent accidental drag || min distance mouse must move
 
-    private static HashSet<Transform> occupiedSnapPoints = new HashSet<Transform>();
-    private Transform currentSnapPoint = null;
+    private static HashSet<Transform> occupiedSnapPoints = new HashSet<Transform>(); //track occupied snap points
+    private Transform currentSnapPoint = null; //snap point that article is snap to 
 
     [System.Serializable]
     public class PuzzleConnection
     {
         public string mySnapName;
-        public GameObject targetPiece;
+        public GameObject targetPiece; //target article it should be connected to 
         public string targetSnapName;
     }
 
     [Header("Correct Position Settings")]
-    public List<PuzzleConnection> correctConnections;
+    public List<PuzzleConnection> correctConnections; //correct connections
 
-    private bool isCorrectlyConnected = false;
-    private static int correctArticleCount = 0;
-    private static bool allArticlesConnectedLogged = false;
-    private static int totalArticles = 0;
+    private bool isCorrectlyConnected = false; //track placement state
+    private static int correctArticleCount = 0; //track how many pieces are correct placed
+    private static bool allArticlesConnectedLogged = false; //tracks debuglog for all article connected correctly
+    private static int totalArticles = 0; //track total puzzle piece 
+
+    private static List<PuzzlePiece> allArticles = new List<PuzzlePiece>(); //check for overlap and flip 
 
     void Start()
     {
         cam = Camera.main;
-        initialY = transform.position.y;
+        initialY = transform.position.y; 
 
-        // Count total articles once at start
-        if (totalArticles == 0)
+        if (totalArticles == 0) //check total article piece once 
         {
-            totalArticles = FindObjectsOfType<Test>().Length;
+            totalArticles = FindObjectsOfType<PuzzlePiece>().Length;
+        }
+
+        if (!allArticles.Contains(this))
+        {
+            allArticles.Add(this);
         }
     }
 
@@ -50,10 +56,15 @@ public class Test : MonoBehaviour
         mouseDownPos = GetMouseWorldPos();
         offset = transform.position - mouseDownPos;
 
-        if (currentSnapPoint != null)
+        if (currentSnapPoint != null) //prevent articles from snapping to same snap point
         {
             occupiedSnapPoints.Remove(currentSnapPoint);
             currentSnapPoint = null;
+        }
+
+        if (correctArticleCount == totalArticles) //check if all articles are correctly palced, if yes, flip 
+        {
+            FlipAllArticles();
         }
     }
 
@@ -61,11 +72,11 @@ public class Test : MonoBehaviour
     {
         if (isDragging)
         {
-            TrySnap();
+            SnapPieces();
 
             bool nowCorrect = IsInCorrectPosition();
 
-            if (nowCorrect && !isCorrectlyConnected)
+            if (nowCorrect && !isCorrectlyConnected) //check if connected correctly 
             {
                 isCorrectlyConnected = true;
                 correctArticleCount++;
@@ -92,7 +103,7 @@ public class Test : MonoBehaviour
             }
             else if (correctArticleCount < totalArticles)
             {
-                allArticlesConnectedLogged = false; // Reset when something becomes incorrect
+                allArticlesConnectedLogged = false; //reset if any is incorrect
             }
         }
 
@@ -107,12 +118,12 @@ public class Test : MonoBehaviour
             Vector3 currentMousePos = GetMouseWorldPos();
             float dragDistance = Vector3.Distance(currentMousePos, mouseDownPos);
 
-            if (!isDragging && dragDistance > dragThreshold)
+            if (!isDragging && dragDistance > this.dragThreshold)
             {
                 isDragging = true;
             }
 
-            if (isDragging)
+            if (isDragging) //move article 
             {
                 Vector3 newPos = currentMousePos + offset;
                 newPos.y = initialY;
@@ -121,20 +132,20 @@ public class Test : MonoBehaviour
         }
     }
 
-    Vector3 GetMouseWorldPos()
+    Vector3 GetMouseWorldPos() //convert to world position 
     {
         Vector3 mouseScreen = Input.mousePosition;
         mouseScreen.z = cam.WorldToScreenPoint(transform.position).z;
         return cam.ScreenToWorldPoint(mouseScreen);
     }
 
-    void TrySnap()
+    void SnapPieces()
     {
-        Test[] allPieces = FindObjectsOfType<Test>();
+        PuzzlePiece[] allPieces = FindObjectsOfType<PuzzlePiece>();
         Transform closestSnapPoint = null;
         float closestDist = float.MaxValue;
 
-        foreach (Test other in allPieces)
+        foreach (PuzzlePiece other in allPieces)
         {
             if (other == this) continue;
 
@@ -150,14 +161,18 @@ public class Test : MonoBehaviour
                     float dist = Vector3.Distance(mySnap.position, theirSnap.position);
                     if (dist < snapDistance && dist < closestDist)
                     {
-                        closestDist = dist;
-                        closestSnapPoint = theirSnap;
+                        // Check if the target position overlaps with another piece
+                        if (!IsPositionOverlapping(theirSnap.position))
+                        {
+                            closestDist = dist;
+                            closestSnapPoint = theirSnap;
+                        }
                     }
                 }
             }
         }
 
-        if (closestSnapPoint != null)
+        if (closestSnapPoint != null) //snap to closet point
         {
             Vector3 targetPosition = closestSnapPoint.position;
             targetPosition.y = initialY;
@@ -166,6 +181,24 @@ public class Test : MonoBehaviour
             currentSnapPoint = closestSnapPoint;
             occupiedSnapPoints.Add(currentSnapPoint);
         }
+    }
+
+    bool IsPositionOverlapping(Vector3 position) //check if pieces are overlapping 
+    {
+        float overlapBuffer = 0.1f;
+
+        foreach (PuzzlePiece other in allArticles)
+        {
+            if (other == this) continue;
+
+            float dist = Vector3.Distance(other.transform.position, position);
+            if (dist < overlapBuffer)
+            {
+                return true; 
+            }
+        }
+
+        return false; 
     }
 
     public bool IsInCorrectPosition()
@@ -190,5 +223,14 @@ public class Test : MonoBehaviour
         }
 
         return true;
+    }
+
+    void FlipAllArticles()
+    {
+        foreach (var article in allArticles)
+        {
+            article.transform.Rotate(0, 0, 180);
+        }
+        Debug.Log("All articles flipped!");
     }
 }
