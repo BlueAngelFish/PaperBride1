@@ -279,12 +279,12 @@ MonoBehaviour:
   snapDistance: 0.4
   dragThreshold: 0.1
   correctConnections:
-  - mySnapName: Snap2
-    targetPiece: {fileID: 1376173363}
-    targetSnapName: Snap1
   - mySnapName: Snap4
-    targetPiece: {fileID: 342441751}
+    targetPiece: {fileID: 334179263}
     targetSnapName: Snap3
+  - mySnapName: Snap1
+    targetPiece: {fileID: 1376173363}
+    targetSnapName: Snap2
 --- !u!1 &152393388
 GameObject:
   m_ObjectHideFlags: 0
@@ -316,6 +316,56 @@ Transform:
   m_Children: []
   m_Father: {fileID: 334179264}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &202537268
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 202537269}
+  - component: {fileID: 202537270}
+  m_Layer: 0
+  m_Name: puzzlemanager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &202537269
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 202537268}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.1196104, y: 1.1042119, z: 0.075471476}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 334179264}
+  - {fileID: 787372189}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &202537270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 202537268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7f177f467e5cc74c90fdb606ce6f11a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isTopPuzzleComplete: 0
+  isBottomPuzzleComplete: 0
+  fullPuzzleGroup: {fileID: 202537269}
+  candle: {fileID: 1883268448}
 --- !u!1 &203844586
 GameObject:
   m_ObjectHideFlags: 0
@@ -779,8 +829,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 334179263}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.349, y: 1.1342, z: 0.198}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.4686104, y: 0.02998805, z: 0.12252852}
   m_LocalScale: {x: 0.0145244105, y: 0.017429292, z: 0.019796234}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -788,7 +838,7 @@ Transform:
   - {fileID: 1178153329}
   - {fileID: 1455890807}
   - {fileID: 2142289209}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 202537269}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!64 &334179265
 MeshCollider:
@@ -881,7 +931,7 @@ MonoBehaviour:
     targetPiece: {fileID: 342441751}
     targetSnapName: Snap2
   - mySnapName: Snap3
-    targetPiece: {fileID: 1376173363}
+    targetPiece: {fileID: 63121430}
     targetSnapName: Snap4
 --- !u!1 &342441751
 GameObject:
@@ -1013,7 +1063,7 @@ MonoBehaviour:
     targetPiece: {fileID: 334179263}
     targetSnapName: Snap1
   - mySnapName: Snap3
-    targetPiece: {fileID: 63121430}
+    targetPiece: {fileID: 1376173363}
     targetSnapName: Snap4
 --- !u!1 &342790295
 GameObject:
@@ -1281,7 +1331,12 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 64886344061715266, guid: fb71d571078e952469f83dcc9bb68890, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 54324626887154284, guid: fb71d571078e952469f83dcc9bb68890, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -1653,8 +1708,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 787372188}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.1196104, y: -1.1042119, z: -0.075471476}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1662,7 +1717,7 @@ Transform:
   - {fileID: 1952706342}
   - {fileID: 242230616}
   - {fileID: 342790296}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 202537269}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &836273807
 GameObject:
@@ -2367,11 +2422,11 @@ MonoBehaviour:
   dragThreshold: 0.1
   correctConnections:
   - mySnapName: Snap4
-    targetPiece: {fileID: 334179263}
+    targetPiece: {fileID: 342441751}
     targetSnapName: Snap3
-  - mySnapName: Snap1
+  - mySnapName: Snap2
     targetPiece: {fileID: 63121430}
-    targetSnapName: Snap2
+    targetSnapName: Snap1
 --- !u!1 &1389436476
 GameObject:
   m_ObjectHideFlags: 0
@@ -2822,6 +2877,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 473886217}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1883268448 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1360175998887840, guid: fb71d571078e952469f83dcc9bb68890, type: 3}
+  m_PrefabInstance: {fileID: 441947722}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1917638891
 GameObject:
   m_ObjectHideFlags: 0
@@ -3089,5 +3149,4 @@ SceneRoots:
   - {fileID: 441947722}
   - {fileID: 1024505450}
   - {fileID: 1725892288}
-  - {fileID: 334179264}
-  - {fileID: 787372189}
+  - {fileID: 202537269}

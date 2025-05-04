@@ -86,7 +86,6 @@ public class PuzzlePiece : MonoBehaviour
                 isCorrectlyConnected = false;
                 correctArticleCount--;
             }
-
             if (nowCorrect)
             {
                 Debug.Log(name + " is in the correct position!");
@@ -100,6 +99,11 @@ public class PuzzlePiece : MonoBehaviour
             {
                 Debug.Log("All articles are in the correct position!");
                 allArticlesConnectedLogged = true;
+
+                if (PuzzleManager.Instance != null)
+                    PuzzleManager.Instance.isTopPuzzleComplete = true;
+
+                PuzzleManager.Instance?.CheckCompletionStatus();
             }
             else if (correctArticleCount < totalArticles)
             {

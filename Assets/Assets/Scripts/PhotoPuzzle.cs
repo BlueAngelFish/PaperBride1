@@ -15,6 +15,7 @@ public class PhotoPuzzle : MonoBehaviour
 
     private static HashSet<Transform> occupiedSnapPoints = new HashSet<Transform>(); //track occupied snap points
     private Transform currentSnapPoint = null; //snap point that article is snap to 
+    private static PuzzleManager puzzleManager;
 
     [System.Serializable]
     public class PuzzleConnection
@@ -47,6 +48,10 @@ public class PhotoPuzzle : MonoBehaviour
         if (!allArticles.Contains(this))
         {
             allArticles.Add(this);
+        }
+        if (puzzleManager == null)
+        {
+            puzzleManager = FindObjectOfType<PuzzleManager>();
         }
     }
 
@@ -90,11 +95,23 @@ public class PhotoPuzzle : MonoBehaviour
             {
                 Debug.Log(name + " is NOT in the correct position!");
             }
-
+            int correctCount = 0;
+            foreach (PhotoPuzzle article in allArticles)
+            {
+                if (article.IsInCorrectPosition())
+                {
+                    correctCount++;
+                }
+            }
             if (correctArticleCount == totalArticles && !allArticlesConnectedLogged)
             {
-                Debug.Log("All articles are in the correct position!");
+                Debug.Log("All photos are in the correct position!");
                 allArticlesConnectedLogged = true;
+
+                if (PuzzleManager.Instance != null)
+                    PuzzleManager.Instance.isBottomPuzzleComplete = true;
+
+                PuzzleManager.Instance?.CheckCompletionStatus(); //if puzzlemanager not null check 
             }
             else if (correctArticleCount < totalArticles)
             {
@@ -223,5 +240,4 @@ public class PhotoPuzzle : MonoBehaviour
     {
         initialY = transform.position.y;
     }
-
 }
