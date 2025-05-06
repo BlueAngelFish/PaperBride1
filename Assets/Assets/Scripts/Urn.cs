@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class Urn : MonoBehaviour
 {
@@ -11,6 +12,9 @@ public class Urn : MonoBehaviour
     private GameObject snappedUrn;
     private bool hasSnapped = false;
     private bool hasReplaced = false;
+
+    public Transform replacementTarget; // Drag your target here in the Inspector
+
 
     void Update()
     {
@@ -59,21 +63,43 @@ public class Urn : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, 5f))
         {
-            if (hit.collider.gameObject == snappedUrn)
+            if (hit.collider.gameObject == snappedUrn && !hasReplaced)
             {
-                snappedUrn.SetActive(false); // or Destroy(snappedUrn);
+                StartCoroutine(LerpReplaceUrn(snappedUrn.transform, replacementTarget.position));
 
-                if (replacementObject != null)
-                {
-                    replacementObject.SetActive(true);
-                }
-                if (ring != null)
-                {
-                    ring.SetActive(true);
-                }
-
-                hasReplaced = true;
             }
         }
     }
+
+    IEnumerator LerpReplaceUrn(Transform urnTransform, Vector3 targetPosition)
+    {
+        float duration = 0.5f;
+        float elapsed = 0f;
+
+        Vector3 startPosition = urnTransform.position;
+
+        while (elapsed < duration)
+        {
+            urnTransform.position = Vector3.Lerp(startPosition, targetPosition, elapsed / duration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        urnTransform.position = targetPosition;
+
+        snappedUrn.SetActive(false);
+
+        if (replacementObject != null)
+        {
+            replacementObject.SetActive(true);
+        }
+
+        if (ring != null)
+        {
+            ring.SetActive(true);
+        }
+
+        hasReplaced = true;
+    }
+
 }
