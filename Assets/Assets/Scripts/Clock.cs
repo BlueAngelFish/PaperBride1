@@ -4,98 +4,88 @@ using UnityEngine;
 
 public class Clock : MonoBehaviour
 {
-    [Header("Clock Hands")]
-    public Transform hourHand;
-    public Transform minuteHand;
+    public Transform centerPivot;
+    public Transform hourPivot;       
+    public Transform minutePivot;    
+    public GameObject compartment;
+    public Animator compartmentAnimator; 
 
-    [Header("Pivot Center")]
-    public Transform clockPivot;
+    private bool isDragging = false; //checks which clock hand being dragged 
+    private Transform selectedPivot = null;
+    private Vector3 lastDirection; //how much player rotates the clock hand (mouse cursor) around centre
 
-    [Header("Hidden Compartment")]
-    public Animation compartmentAnimator;
-
-    [Header("Correct Time (in Degrees)")]
-    public float correctHourAngle = 240f;  // 4:00
-    public float correctMinuteAngle = 0f;
-
-    [Header("Tolerance")]
-    public float angleTolerance = 2f;
-
-    private bool isDragging;
-    private Transform currentHand;
-    private Vector3 lastDirection;
-    private bool solved = false;
-
-    void Update()
+    private bool hasTriggered = false;
+    void Start()
     {
-        HandleMouseInput();
-        CheckForCorrectTime();
+        compartmentAnimator = compartment.GetComponent<Animator>();
     }
-
-    void HandleMouseInput()
+    void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                if (hit.transform == hourHand || hit.transform == minuteHand)
+                if (hit.transform.CompareTag("ClockHand"))
                 {
-                    currentHand = hit.transform;
-                    lastDirection = GetMouseDirectionToPivot();
+                    selectedPivot = hit.transform.parent; //get parent's (pivot) transform 
                     isDragging = true;
+
+                    //calculate direction from centre pivot to mouse position 
+                    Vector3 worldPos = GetMouseWorldPositionOnPlane(centerPivot.position, Vector3.forward);
+                    lastDirection = (worldPos - centerPivot.position).normalized;
                 }
             }
         }
 
-        if (Input.GetMouseButton(0) && isDragging && currentHand != null)
+        if (isDragging && selectedPivot != null)
         {
-            Vector3 currentDirection = GetMouseDirectionToPivot();
-            float angleDelta = Vector3.SignedAngle(lastDirection, currentDirection, Vector3.forward);
+            Vector3 currentPos = GetMouseWorldPositionOnPlane(centerPivot.position, Vector3.forward);
+            Vector3 currentDir = (currentPos - centerPivot.position).normalized;
 
-            if (angleDelta > 0f) // Only allow clockwise
-            {
-                currentHand.RotateAround(clockPivot.position, Vector3.forward, angleDelta);
-                lastDirection = currentDirection;
-            }
+            float angle = Vector3.SignedAngle(lastDirection, currentDir, Vector3.forward); //calculate angle and which direction to rotate 
+            selectedPivot.Rotate(0, 0, angle);
+
+            lastDirection = currentDir; //update direction 
         }
 
         if (Input.GetMouseButtonUp(0))
         {
             isDragging = false;
-            currentHand = null;
+            selectedPivot = null;
         }
+
+        CheckUnlockCondition();
     }
 
-    Vector3 GetMouseDirectionToPivot()
+    void CheckUnlockCondition()
     {
-        Vector3 mousePos = Input.mousePosition;
-        Vector3 worldMouse = Camera.main.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, clockPivot.position.z - Camera.main.transform.position.z));
-        return (worldMouse - clockPivot.position).normalized;
-    }
+        if (hasTriggered) return;
 
-    void CheckForCorrectTime()
-    {
-        if (solved) return;
+        float hourAngle = NormalizeAngle(hourPivot.eulerAngles.z); //normalise to 0-360 degree 
+        float minuteAngle = NormalizeAngle(minutePivot.eulerAngles.z);
 
-        float hourZ = NormalizeAngle(hourHand.eulerAngles.z);
-        float minuteZ = NormalizeAngle(minuteHand.eulerAngles.z);
-
-        bool hourCorrect = Mathf.Abs(hourZ - correctHourAngle) <= angleTolerance;
-        bool minuteCorrect = Mathf.Abs(minuteZ - correctMinuteAngle) <= angleTolerance;
-
-        if (hourCorrect && minuteCorrect)
+        // adjust based on hour and min pivot 
+        if (Mathf.Abs(hourAngle - 270f) < 10f && Mathf.Abs(minuteAngle - 240f) < 10f)
         {
-            solved = true;
-            compartmentAnimator.Play();
-            Debug.Log("Puzzle solved! Compartment opening.");
+            hasTriggered = true;
+            compartmentAnimator.SetTrigger("Pull");
+            Debug.Log("Unlocked!");
         }
     }
 
-    float NormalizeAngle(float angle)
+    float NormalizeAngle(float angle) //angle stays within 0-360 degree 
     {
-        angle %= 360;
-        if (angle < 0) angle += 360;
+        angle %= 360f;
+        if (angle < 0f) angle += 360f;
         return angle;
+    }
+
+    Vector3 GetMouseWorldPositionOnPlane(Vector3 planeOrigin, Vector3 planeNormal) //convert mouse position to world position  
+    {
+        Plane plane = new Plane(planeNormal, planeOrigin);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        plane.Raycast(ray, out float distance);
+        return ray.GetPoint(distance);
     }
 }
