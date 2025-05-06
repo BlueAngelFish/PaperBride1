@@ -3,7 +3,7 @@ using UnityEngine;
 public class MouseGrabber : MonoBehaviour
 {
     public float dragDistance = 3f;           // Distance from camera when dragging
-    public KeyCode dragKey = KeyCode.Mouse1;  // Right mouse button
+    public KeyCode dragKey = KeyCode.Mouse0;  // Right mouse button
     private GameObject grabbedObject = null;
     private float objectZOffset;
     public Transform snapTarget;   // The point to snap to
