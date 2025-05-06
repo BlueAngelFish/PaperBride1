@@ -364,7 +364,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isTopPuzzleComplete: 0
   isBottomPuzzleComplete: 0
-  fullPuzzle: {fileID: 0}
+  fullPuzzle: {fileID: 202537269}
   candle: {fileID: 1883268448}
 --- !u!1 &203844586
 GameObject:
