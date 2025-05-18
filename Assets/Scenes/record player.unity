@@ -485,7 +485,7 @@ Transform:
   m_GameObject: {fileID: 122938217}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -0.748, y: 2.998, z: 18.577}
+  m_LocalPosition: {x: -0.748, y: 2.998, z: 17.248}
   m_LocalScale: {x: 1.5493975, y: 1.5493975, z: 1.5493975}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1028,7 +1028,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   snapPoint: {fileID: 1614675612}
-  snapDistance: 0.2
+  snapDistance: 0.3
   insertDistance: 0.05
   rotationSpeed: 5
   insertSpeed: 0.5
@@ -1417,7 +1417,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: dfa5a7dec4f084644a3412b3f7222046, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 18.41
+      value: 17.081
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: dfa5a7dec4f084644a3412b3f7222046, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1703,11 +1703,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3b391f0a33b0b734bbd333488799d13e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.8135164
+      value: 2.704
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3b391f0a33b0b734bbd333488799d13e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 18.612
+      value: 17.282999
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3b391f0a33b0b734bbd333488799d13e, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3290,8 +3290,8 @@ Transform:
   m_GameObject: {fileID: 1614675611}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.668, y: 2.889516, z: 18.727999}
-  m_LocalScale: {x: 1.5493975, y: 1.5493975, z: 1.5493975}
+  m_LocalPosition: {x: -0.719, y: 2.689, z: 17.452}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -5855,7 +5855,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4459864850019384740, guid: 6bacecc4f3df9584198879c73a6b6c36, type: 3}
       propertyPath: walkSpeed
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4459864850019384740, guid: 6bacecc4f3df9584198879c73a6b6c36, type: 3}
       propertyPath: enableJump
@@ -5867,7 +5867,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4459864850019384740, guid: 6bacecc4f3df9584198879c73a6b6c36, type: 3}
       propertyPath: sprintSpeed
-      value: 4
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4459864850019384740, guid: 6bacecc4f3df9584198879c73a6b6c36, type: 3}
       propertyPath: invertCamera

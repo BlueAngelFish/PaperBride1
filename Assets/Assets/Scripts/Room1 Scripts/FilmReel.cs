@@ -6,9 +6,9 @@ public class FilmReel : MonoBehaviour
 {
     public Transform snapPoint;
     public float snapDistance = 0.2f;
-    public float insertDistance = 0.05f; //finish "inserting"
+    public float insertDistance = 0.05f;
     public float rotationSpeed = 5f;
-    public float insertSpeed = 0.5f; //reel rotate when snapping 
+    public float insertSpeed = 0.5f;
 
     private bool isSnapped = false;
     private bool isInserting = false;
@@ -16,29 +16,40 @@ public class FilmReel : MonoBehaviour
 
     private Quaternion targetRotation;
 
+    public GameObject filmOutline;
+
     void Start()
     {
         grabScript = GetComponent<Grab>();
+        if (filmOutline != null)
+            filmOutline.SetActive(false);
     }
 
     void Update()
     {
-        if (isSnapped || snapPoint == null || grabScript == null) return;
-
-        if (!isInserting && !grabScript.IsBeingHeld) //if it's not insert or grabbing
+        // Disable outline if grabbed
+        if (grabScript != null && grabScript.IsBeingHeld)
         {
-            float distance = Vector3.Distance(transform.position, snapPoint.position); //check distance from snap point
-            if (distance <= snapDistance) //if near snap point, start "inserting" (animating in)
+            if (filmOutline != null && filmOutline.activeSelf)
+                filmOutline.SetActive(false);
+        }
+
+        if (isSnapped || snapPoint == null || grabScript == null)
+            return;
+
+        if (!isInserting && !grabScript.IsBeingHeld)
+        {
+            float distance = Vector3.Distance(transform.position, snapPoint.position);
+            if (distance <= snapDistance)
             {
                 isInserting = true;
-
-                Vector3 snapEuler = snapPoint.rotation.eulerAngles; //rotate film reel due to the long tape
+                Vector3 snapEuler = snapPoint.rotation.eulerAngles;
                 snapEuler.y += 70f;
                 targetRotation = Quaternion.Euler(snapEuler);
             }
         }
 
-        if (isInserting) //move slowly to snap point 
+        if (isInserting)
         {
             transform.position = Vector3.MoveTowards(transform.position, snapPoint.position, Time.deltaTime * insertSpeed);
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
@@ -51,5 +62,17 @@ public class FilmReel : MonoBehaviour
                 isInserting = false;
             }
         }
+    }
+
+    void OnMouseEnter()
+    {
+        if (grabScript != null && !grabScript.IsBeingHeld && filmOutline != null)
+            filmOutline.SetActive(true);
+    }
+
+    void OnMouseExit()
+    {
+        if (filmOutline != null)
+            filmOutline.SetActive(false);
     }
 }
