@@ -12,6 +12,7 @@ TagManager:
   - Grabbable
   - Teacup
   - ClockHand
+  - VinylRotate
   layers:
   - Default
   - TransparentFX

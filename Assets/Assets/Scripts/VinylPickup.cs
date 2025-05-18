@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class VinylPickup : MonoBehaviour
 {
@@ -11,6 +11,7 @@ public class VinylPickup : MonoBehaviour
     private bool isSnapped = false;
     public GameObject ghostVinyl;        // Assign this in the Inspector
     public float ghostShowRange = 0.5f; // Show ghost when within this range
+    public GameObject vinylOutline; // The outline object inside the grabbed vinyl
 
 
 
@@ -31,7 +32,12 @@ public class VinylPickup : MonoBehaviour
         {
             DragObjectWithMouse();
         }
+        else
+        {
+            HandleHoverOutline(); // <- only check hover if not grabbing
+        }
     }
+
 
     void TryGrabObject()
     {
@@ -44,14 +50,20 @@ public class VinylPickup : MonoBehaviour
 
                 if (grabbedObject.TryGetComponent<Rigidbody>(out Rigidbody rb))
                 {
-                    rb.freezeRotation = true; // Optional: prevents it from spinning
-                                              // Do NOT set isKinematic = true!
+                    rb.isKinematic = true;
                 }
 
                 objectZOffset = Vector3.Distance(Camera.main.transform.position, grabbedObject.transform.position);
+
+                // Hide outline when grabbed
+                if (vinylOutline != null)
+                {
+                    vinylOutline.SetActive(false);
+                }
             }
         }
     }
+
 
 
     void DragObjectWithMouse()
@@ -68,7 +80,7 @@ public class VinylPickup : MonoBehaviour
 
         float distanceToSnap = Vector3.Distance(grabbedObject.transform.position, snapTarget.position);
 
-        // ?? Show ghost vinyl if within ghostShowRange
+        // 👻 Show ghost vinyl if within ghostShowRange
         if (distanceToSnap <= ghostShowRange)
         {
             if (!ghostVinyl.activeSelf)
@@ -80,7 +92,7 @@ public class VinylPickup : MonoBehaviour
                 ghostVinyl.SetActive(false);
         }
 
-        // ? Snap if within snapRange
+        // ✅ Snap if within snapRange
         if (distanceToSnap <= snapRange)
         {
             grabbedObject.transform.position = snapTarget.position;
@@ -89,6 +101,8 @@ public class VinylPickup : MonoBehaviour
 
             ghostVinyl.SetActive(false);
         }
+
+        
     }
 
 
@@ -113,6 +127,27 @@ public class VinylPickup : MonoBehaviour
         }
 
 
+    }
+
+    void HandleHoverOutline()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, dragDistance))
+        {
+            if (hit.collider.CompareTag("Grabbable"))
+            {
+                if (vinylOutline != null && hit.collider.gameObject == vinylOutline.transform.parent.gameObject)
+                {
+                    vinylOutline.SetActive(true);
+                    return;
+                }
+            }
+        }
+
+        if (vinylOutline != null)
+        {
+            vinylOutline.SetActive(false);
+        }
     }
 
 }
